@@ -1,22 +1,26 @@
-# Use an official Node.js runtime as a parent image
-FROM node:18-alpine 
-# Or any other suitable Node.js version
+# Use the official Node.js image from the Docker Hub
+FROM node:18-alpine
 
-# Set the working directory in the container
+# Set the working directory inside the container
 WORKDIR /app
 
-# Copy package.json and package-lock.json (or yarn.lock) to the working directory
+# Copy package.json and package-lock.json (or yarn.lock) to the container
 COPY package*.json ./
 
-# Install application dependencies
+# Install dependencies
 RUN npm install
 
-# Copy the rest of the application code to the working directory
+# Copy the rest of your project files to the container
 COPY . .
 
-# Expose the port your application listens on
-EXPOSE 3000 
-# Replace with your application's port
+# Install TypeScript globally
+RUN npm install -g typescript ts-node
 
-# Define the command to run your application
-CMD [ "npm", "start" ] # Or "yarn start", "node server.js", etc.
+# Compile TypeScript (if necessary, or you can use ts-node directly to run)
+RUN tsc
+
+# Expose the port your application will run on
+EXPOSE 3000
+
+# Command to run your application
+CMD ["node", "dist/index.js"]
